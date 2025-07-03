@@ -1,5 +1,8 @@
 from langchain_ollama import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
+import tkinter as tk
+
+
 
 template = """You are Monika from Doki Doki Literature Club, acting as my loving friend and assistant.
 Here is the conversation history: {context}
