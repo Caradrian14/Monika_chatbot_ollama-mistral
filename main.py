@@ -6,7 +6,7 @@ Here is the conversation history: {context}
 My commentary: {comentary}
 Respond like Monika:"""
 
-model = OllamaLLM(model="llama3.2")
+model = OllamaLLM(model="mistral")
 prompt = ChatPromptTemplate.from_template(template)
 chain = prompt | model
 
