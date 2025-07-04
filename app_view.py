@@ -12,7 +12,15 @@ ventana.attributes('-alpha', 0.95)
 color_fondo = "#2d2d2d"
 color_texto = "#ffffff"
 
-
+# Cargar imágenes para los iconos
+# Asegúrate de tener las imágenes en el mismo directorio o proporciona la ruta completa
+try:
+    icono_usuario = tk.PhotoImage(file="media/user.png")
+    icono_ia = tk.PhotoImage(file="media/monika.png")
+except:
+    print("No se pudieron cargar las imágenes. Usando texto en su lugar.")
+    icono_usuario = None
+    icono_ia = None
 
 # Área de texto para el historial del chat
 historial_chat = tk.Text(ventana, state='normal', width=60, height=30, bg=color_fondo, fg=color_texto, insertbackground=color_texto)
@@ -34,7 +42,7 @@ chain = prompt | model
 # --------------
 
 
-def enviar_mensaje(chain):
+def enviar_mensaje_depracted(chain):
     mensaje = entrada_texto.get()
     if mensaje:
         historial_chat.insert(tk.END, "Tú: " + mensaje + "\n\n")
@@ -46,6 +54,33 @@ def enviar_mensaje(chain):
         # Por ejemplo: respuesta_ia = obtener_respuesta_ia(mensaje)
         # historial_chat.insert(tk.END, "IA: " + respuesta_ia + "\n")
         historial_chat.see(tk.END)
+
+def enviar_mensaje(chain):
+    mensaje = entrada_texto.get()
+    if mensaje:
+        # Mostrar mensaje del usuario con icono
+        mostrar_mensaje("User", mensaje, icono_usuario)
+        entrada_texto.delete(0, tk.END)
+
+        # Simular respuesta de la IA
+        context = ""
+        respuesta_ia = chain.invoke({"context": context, "comentary": mensaje})
+        mostrar_mensaje("Monika", respuesta_ia, icono_ia)
+
+# Función para mostrar mensajes con iconos
+def mostrar_mensaje(autor, mensaje, icono):
+    frame = tk.Frame(historial_chat, bg=color_fondo)
+    frame.pack(anchor='w', pady=5, padx=10)
+
+    if icono:
+        etiqueta_icono = tk.Label(frame, image=icono, bg=color_fondo)
+        etiqueta_icono.pack(side='left')
+
+    etiqueta_mensaje = tk.Label(frame, text=f"{autor}: {mensaje}", bg=color_fondo, fg=color_texto, wraplength=400)
+    etiqueta_mensaje.pack(side='left')
+
+    historial_chat.window_create(tk.END, window=frame)
+    historial_chat.insert(tk.END, "\n")
 
 # Campo de entrada para nuevos mensajes
 # entrada_texto = tk.Entry(ventana, width=50)
