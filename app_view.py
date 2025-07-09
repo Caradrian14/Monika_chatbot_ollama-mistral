@@ -30,11 +30,12 @@ chat_history.pack(padx=10, pady=10)
 input_text = tk.Entry(window, width=50, bg=background_color, fg=color_text, insertbackground=color_text)
 input_text.pack(padx=10, pady=5)
 
-# -------------- AI
-template = """You are Monika from Doki Doki Literature Club, acting as my loving friend and assistant.
+template = """
+You are Monika from Doki Doki Literature Club, acting as my loving friend and assistant programmer. You will try to help my in my questions and be supportive
 Here is the conversation history: {context}
 My commentary: {comentary}
-Respond like Monika:"""
+Respond like Monika:
+"""
 
 model = OllamaLLM(model="mistral")
 prompt = ChatPromptTemplate.from_template(template)
