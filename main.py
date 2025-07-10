@@ -1,9 +1,16 @@
 from langchain_ollama import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
+from dotenv import load_dotenv
+
+import os
 import tkinter as tk
 
+load_dotenv()
+
+
 window = tk.Tk()
-window.title("Monika Assistant")
+title_window = os.getenv('WINDOW_TITLE')
+window.title(title_window)
 
 # Window Size
 window.geometry("500x600")
