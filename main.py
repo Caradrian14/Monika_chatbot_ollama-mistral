@@ -1,6 +1,10 @@
+from warnings import catch_warnings
+
 from langchain_ollama import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
+import logging
+
 
 import os
 import tkinter as tk
@@ -43,31 +47,44 @@ prompt = ChatPromptTemplate.from_template(template)
 chain = prompt | model
 # --------------
 def send_message(chain):
-    message = input_text.get()
-    if message:
-        # Show user icon and input
-        show_message("User", message, user_icon)
-        input_text.delete(0, tk.END)
+    try:
+        message = input_text.get()
+        if message:
+            # Show user icon and input
+            show_message("User", message, user_icon)
+            input_text.delete(0, tk.END)
 
-        # AI response
-        context = ""
-        response_ai = chain.invoke({"context": context, "comentary": message})
-        show_message("Monika", response_ai, ia_icon)
+            # AI response
+            context = ""
+            response_ai = chain.invoke({"context": context, "comentary": message})
+            show_message("Monika", response_ai, ia_icon)
+    except Exception as e:
+        logging.error("Error sendind a massege: %s", str(e))
+
 
 def show_message(autor, mensaje, icon):
-    frame = tk.Frame(chat_history, bg=background_color)
-    frame.pack(anchor='w', pady=5, padx=10)
+    try:
+        frame = tk.Frame(chat_history, bg=background_color)
+        frame.pack(anchor='w', pady=5, padx=10)
 
-    if icon:
-        tag_icon = tk.Label(frame, image=icon, bg=background_color)
-        tag_icon.pack(side='left')
+        if icon:
+            tag_icon = tk.Label(frame, image=icon, bg=background_color)
+            tag_icon.pack(side='left')
 
-    tag_message = tk.Label(frame, text=f"{autor}: {mensaje}", bg=background_color, fg=color_text, wraplength=400)
-    tag_message.pack(side='left')
+        tag_message = tk.Label(frame, text=f"{autor}: {mensaje}", bg=background_color, fg=color_text, wraplength=400)
+        tag_message.pack(side='left')
 
-    chat_history.window_create(tk.END, window=frame)
-    chat_history.insert(tk.END, "\n")
+        chat_history.window_create(tk.END, window=frame)
+        chat_history.insert(tk.END, "\n")
+    except Exception as e:
+        logging.error("Error in the frame: %s", str(e))
 
+# Error log manager
+logging.basicConfig(
+    filename='app.log',  # Nombre del archivo de log
+    level=logging.ERROR,  # Nivel de logging (ERROR, INFO, DEBUG, etc.)
+    format='%(asctime)s - %(levelname)s - %(message)s'  # Formato del mensaje de log
+)
 # entrada_texto = tk.Entry(ventana, width=50)
 # entrada_texto.pack(padx=10, pady=5)
 
