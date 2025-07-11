@@ -67,12 +67,22 @@ def show_message(autor, mensaje, icon):
         frame = tk.Frame(chat_history, bg=background_color)
         frame.pack(anchor='w', pady=5, padx=10)
 
+        frame.grid_columnconfigure(0, weight=1)
+        frame.grid_columnconfigure(1, weight=1)
+
         if icon:
             tag_icon = tk.Label(frame, image=icon, bg=background_color)
-            tag_icon.pack(side='left')
+            tag_icon.grid(row=0, column=0, sticky='e', padx=(0, 5))  # Alinear a la derecha con un padding a la derecha le chat
 
-        tag_message = tk.Label(frame, text=f"{autor}: {mensaje}", bg=background_color, fg=color_text, wraplength=400)
-        tag_message.pack(side='left')
+        #       if icon:
+ #           tag_icon = tk.Label(frame, image=icon, bg=background_color)
+ #           tag_icon.pack(side='left')
+
+        tag_message = tk.Label(frame, text=f"{autor}: {mensaje}", bg=background_color, fg=color_text, wraplength=400, justify='left')
+        tag_message.grid(row=0, column=1, sticky='w')  # Alinear a la izquierda
+
+        #tag_message = tk.Label(frame, text=f"{autor}: {mensaje}", bg=background_color, fg=color_text, wraplength=400)
+        #tag_message.pack(side='left')
 
         chat_history.window_create(tk.END, window=frame)
         chat_history.insert(tk.END, "\n")
