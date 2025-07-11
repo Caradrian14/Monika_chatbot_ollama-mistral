@@ -13,15 +13,16 @@ title_window = os.getenv('WINDOW_TITLE')
 window.title(title_window)
 
 # Window Size
-window.geometry("500x600")
+windows_geometry = os.getenv('WINDOW_SIZE')
+window.geometry(windows_geometry)
 window.attributes('-alpha', 0.95)
 # Colors for the background
-background_color = "#2d2d2d"
-color_text = "#ffffff"
+background_color = os.getenv('CHAT_BACKGROUND_COLOR')
+color_text = os.getenv('CHAT_COLOR_TEXT')
 
 try:
-    user_icon = tk.PhotoImage(file="media/user.png")
-    ia_icon = tk.PhotoImage(file="media/monika.png")
+    user_icon = tk.PhotoImage(file=os.getenv('CHAT_USER_ICON'))
+    ia_icon = tk.PhotoImage(file=os.getenv('CHAT_IA_ICON'))
 except:
     print("No se pudieron cargar las imágenes. Usando texto en su lugar.")
     user_icon = None
@@ -35,14 +36,9 @@ chat_history.pack(padx=10, pady=10)
 input_text = tk.Entry(window, width=50, bg=background_color, fg=color_text, insertbackground=color_text)
 input_text.pack(padx=10, pady=5)
 
-template = """
-You are Monika from Doki Doki Literature Club, acting as my loving friend and assistant programmer.
-Here is the conversation history: {context}
-My commentary: {comentary}
-Respond like Monika:
-"""
-
-model = OllamaLLM(model="mistral")
+template = os.getenv('TEMPLATE_FOR_MODEL')
+model_name = os.getenv('MODEL_OLLAMA')
+model = OllamaLLM(model=model_name)
 prompt = ChatPromptTemplate.from_template(template)
 chain = prompt | model
 # --------------
@@ -84,3 +80,4 @@ window.bind('<Return>', lambda event: send_message(chain))
 
 # makes the loop in the app
 window.mainloop()
+
