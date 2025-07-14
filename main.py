@@ -1,103 +1,120 @@
-from warnings import catch_warnings
-
-from langchain_ollama import OllamaLLM
-from langchain_core.prompts import ChatPromptTemplate
-from dotenv import load_dotenv
 import logging
-
-
 import os
 import tkinter as tk
-from tkinter import ttk
+from dotenv import load_dotenv
+from langchain_ollama import OllamaLLM
+from langchain_core.prompts import ChatPromptTemplate
+
+# Load environment variables
 load_dotenv()
 
+class ChatApplication:
+    def __init__(self, root):
+        self.root = root
+        self.setup_window()
+        self.setup_chat_history()
+        self.setup_input_field()
+        self.setup_model()
+        self.setup_logging()
 
-window = tk.Tk()
-title_window = os.getenv('WINDOW_TITLE')
-window.title(title_window)
+    def setup_window(self):
+        self.root.title(os.getenv('WINDOW_TITLE', 'Chat Application'))
+        self.root.geometry(os.getenv('WINDOW_SIZE', '500x600'))
+        self.root.attributes('-alpha', 0.95)
 
-# Window Size
-windows_geometry = os.getenv('WINDOW_SIZE')
-window.geometry(windows_geometry)
-window.attributes('-alpha', 0.95)
-# Colors for the background
-background_color = os.getenv('CHAT_BACKGROUND_COLOR')
-color_text = os.getenv('CHAT_COLOR_TEXT')
+    def setup_chat_history(self):
+        background_color = os.getenv('CHAT_BACKGROUND_COLOR', 'white')
+        color_text = os.getenv('CHAT_COLOR_TEXT', 'black')
 
-try:
-    user_icon = tk.PhotoImage(file=os.getenv('CHAT_USER_ICON'))
-    ia_icon = tk.PhotoImage(file=os.getenv('CHAT_IA_ICON'))
-except:
-    print("No se pudieron cargar las imágenes. Usando texto en su lugar.")
-    user_icon = None
-    ia_icon = None
+        # Frame to hold the Text and Scrollbar widgets
+        chat_frame = tk.Frame(self.root)
+        chat_frame.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
 
-# chat history
-chat_history = tk.Text(window, state='normal', width=60, height=30, bg=background_color, fg=color_text, insertbackground=color_text)
-chat_history.pack(padx=10, pady=10)
+        # Create a Scrollbar
+        scrollbar = tk.Scrollbar(chat_frame)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
+        # Create the Text widget
+        self.chat_history = tk.Text(chat_frame, state='normal', width=60, height=30,
+                                    bg=background_color, fg=color_text,
+                                    insertbackground=color_text, yscrollcommand=scrollbar.set)
+        self.chat_history.pack(fill=tk.BOTH, expand=True)
 
-# input for new message
-input_text = tk.Entry(window, width=50, bg=background_color, fg=color_text, insertbackground=color_text)
-input_text.pack(padx=10, pady=5)
+        # Configure the Scrollbar
+        scrollbar.config(command=self.chat_history.yview)
 
-template = os.getenv('TEMPLATE_FOR_MODEL')
-model_name = os.getenv('MODEL_OLLAMA')
-model = OllamaLLM(model=model_name)
-prompt = ChatPromptTemplate.from_template(template)
-chain = prompt | model
-# --------------
-def send_message(chain):
-    try:
-        message = input_text.get()
-        if message:
-            # Show user icon and input
-            show_message("User", message, user_icon)
-            input_text.delete(0, tk.END)
+        try:
+            self.user_icon = tk.PhotoImage(file=os.getenv('CHAT_USER_ICON'))
+            self.ia_icon = tk.PhotoImage(file=os.getenv('CHAT_IA_ICON'))
+        except Exception as e:
+            logging.error("No se pudieron cargar las imágenes: %s", str(e))
+            self.user_icon = None
+            self.ia_icon = None
 
-            # AI response
-            context = ""
-            response_ai = chain.invoke({"context": context, "comentary": message})
-            show_message("Monika", response_ai, ia_icon)
-    except Exception as e:
-        logging.error("Error sendind a massege: %s", str(e))
+    def setup_input_field(self):
+        background_color = os.getenv('CHAT_BACKGROUND_COLOR', 'white')
+        color_text = os.getenv('CHAT_COLOR_TEXT', 'black')
 
+        self.input_text = tk.Entry(self.root, width=50, bg=background_color,
+                                   fg=color_text, insertbackground=color_text)
+        self.input_text.pack(padx=10, pady=5)
 
-def show_message(autor, mensaje, icon):
-    try:
-        frame = tk.Frame(chat_history, bg=background_color)
-        frame.pack(anchor='w', pady=5, padx=10)
-        frame.grid_columnconfigure(0, weight=1)
-        frame.grid_columnconfigure(1, weight=1)
+        self.boton_enviar = tk.Button(self.root, text="Send", command=self.send_message)
+        self.boton_enviar.pack(pady=5)
 
-        if icon:
-            tag_icon = tk.Label(frame, image=icon, bg=background_color)
-            tag_icon.grid(row=0, column=0, sticky='e', padx=(0, 5))  # Alinear a la derecha con un padding a la derecha le chat
+        self.root.bind('<Return>', lambda event: self.send_message())
 
-        tag_message = tk.Label(frame, text=f"{autor}: {mensaje}", bg=background_color, fg=color_text, wraplength=400, justify='left')
-        tag_message.grid(row=0, column=1, sticky='w')  # Alinear a la izquierda
+    def setup_model(self):
+        template = os.getenv('TEMPLATE_FOR_MODEL')
+        model_name = os.getenv('MODEL_OLLAMA')
 
-        chat_history.window_create(tk.END, window=frame)
-        chat_history.insert(tk.END, "\n")
-    except Exception as e:
-        logging.error("Error in the frame: %s", str(e))
+        self.model = OllamaLLM(model=model_name)
+        self.prompt = ChatPromptTemplate.from_template(template)
+        self.chain = self.prompt | self.model
 
-# Error log manager
-logging.basicConfig(
-    filename='app.log',  # Nombre del archivo de log
-    level=logging.ERROR,  # Nivel de logging (ERROR, INFO, DEBUG, etc.)
-    format='%(asctime)s - %(levelname)s - %(message)s'  # Formato del mensaje de log
-)
-# entrada_texto = tk.Entry(ventana, width=50)
-# entrada_texto.pack(padx=10, pady=5)
+    def setup_logging(self):
+        logging.basicConfig(
+            filename='app.log',
+            level=logging.ERROR,
+            format='%(asctime)s - %(levelname)s - %(message)s'
+        )
 
-# botton input
-boton_enviar = tk.Button(window, text="Send", command=send_message)
-boton_enviar.pack(pady=5)
+    def send_message(self, event=None):
+        try:
+            message = self.input_text.get()
+            if message:
+                self.show_message("User", message, self.user_icon)
+                self.input_text.delete(0, tk.END)
+                context = ""
+                response_ai = self.chain.invoke({"context": context, "comentary": message})
+                self.show_message("Monika", response_ai, self.ia_icon)
+        except Exception as e:
+            logging.error("Error sending a message: %s", str(e))
 
-# let enter send message
-window.bind('<Return>', lambda event: send_message(chain))
+    def show_message(self, author, message, icon):
+        try:
+            frame = tk.Frame(self.chat_history, bg=os.getenv('CHAT_BACKGROUND_COLOR', 'white'))
+            frame.pack(anchor='w', pady=5, padx=10)
+            frame.grid_columnconfigure(0, weight=1)
+            frame.grid_columnconfigure(1, weight=1)
 
-# makes the loop in the app
-window.mainloop()
+            if icon:
+                tag_icon = tk.Label(frame, image=icon, bg=os.getenv('CHAT_BACKGROUND_COLOR', 'white'))
+                tag_icon.grid(row=0, column=0, sticky='e', padx=(0, 5))
 
+            tag_message = tk.Label(frame, text=f"{author}: {message}",
+                                   bg=os.getenv('CHAT_BACKGROUND_COLOR', 'white'),
+                                   fg=os.getenv('CHAT_COLOR_TEXT', 'black'),
+                                   wraplength=400, justify='left')
+            tag_message.grid(row=0, column=1, sticky='w')
+
+            self.chat_history.window_create(tk.END, window=frame)
+            self.chat_history.insert(tk.END, "\n")
+            self.chat_history.see(tk.END)  # Auto-scroll to the bottom
+        except Exception as e:
+            logging.error("Error in the frame: %s", str(e))
+
+if __name__ == "__main__":
+    window = tk.Tk()
+    app = ChatApplication(window)
+    window.mainloop()
