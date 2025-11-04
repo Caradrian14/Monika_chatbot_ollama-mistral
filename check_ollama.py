@@ -104,7 +104,7 @@ def main() -> int:
 
         #If Cli responds OK, LLM goes nice but keep looking
     else:
-        print(f"[1] CLI: 'ollama list' -> NO. Detalle: {out_cli}")
+        print(f"[1] CLI: 'ollama list' -> NO. Detail: {out_cli}")
 
     ok_port, out_port = check_port_open()
     if ok_port:
@@ -122,10 +122,11 @@ def main() -> int:
         print("\n=> Result: Ollama looks RUNNING and Api responf okay.")
         return 0
     if ok_cli:
-        print("\n=> Resultado: 'ollama' CLI está instalado y respondió, pero el puerto/API no responden. Puede que el servidor no esté corriendo o esté en otra dirección/puerto.")
+        print(
+            "\n=> Result: 'ollama' CLI respond, but port/API no respond.")
         return 1
 
-    print("\n=> Resultado: Ollama NO parece estar corriendo en localhost:11434 (ni 'ollama' accesible).")
+    print("\n=> Result: Ollama is NOT looking running inlocalhost:11434 (no 'ollama' accesible).")
     return 1
 
 

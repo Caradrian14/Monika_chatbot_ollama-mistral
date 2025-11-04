@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from langchain_ollama import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 
+import check_ollama
 # Load environment variables
 load_dotenv()
 
@@ -114,6 +115,7 @@ class ChatApplication:
             logging.error("Error in the frame: %s", str(e))
 
 if __name__ == "__main__":
+
     window = tk.Tk()
     app = ChatApplication(window)
     window.mainloop()
