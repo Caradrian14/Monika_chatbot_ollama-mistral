@@ -67,7 +67,6 @@ class ChatApplication:
     def setup_model(self):
         template = os.getenv('TEMPLATE_FOR_MODEL')
         model_name = os.getenv('MODEL_OLLAMA')
-
         self.model = OllamaLLM(model=model_name)
         self.prompt = ChatPromptTemplate.from_template(template)
         self.chain = self.prompt | self.model
