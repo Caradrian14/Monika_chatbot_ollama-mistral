@@ -100,7 +100,7 @@ class ChatApplication:
 
             if icon:
                 tag_icon = tk.Label(frame, image=icon, bg=os.getenv('CHAT_BACKGROUND_COLOR', 'white'))
-                tag_icon.grid(row=0, column=0, sticky='e', padx=(0, 5))
+                tag_icon.grid(row=0, column=0, sticky='ne', padx=(0, 5))
 
             tag_message = tk.Label(frame, text=f"{author}: {message}",
                                    bg=os.getenv('CHAT_BACKGROUND_COLOR', 'white'),
