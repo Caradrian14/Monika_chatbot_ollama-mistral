@@ -23,23 +23,34 @@ class ChatApplication:
         self.root.geometry(os.getenv('WINDOW_SIZE', '500x600'))
         self.root.attributes('-alpha', 0.95)
 
+        # Configurar el grid del root
+        self.root.grid_rowconfigure(0, weight=1)  # Fila del chat se expande
+        self.root.grid_rowconfigure(1, weight=0)  # Fila del input no se expande
+        self.root.grid_rowconfigure(2, weight=0)  # Fila del botón no se expande
+        self.root.grid_columnconfigure(0, weight=1)  # Columna se expande
+
     def setup_chat_history(self):
         background_color = os.getenv('CHAT_BACKGROUND_COLOR', 'white')
         color_text = os.getenv('CHAT_COLOR_TEXT', 'black')
 
         # Frame to hold the Text and Scrollbar widgets
+
         chat_frame = tk.Frame(self.root)
-        chat_frame.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
+        chat_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+
+        chat_frame.grid_rowconfigure(0, weight=1)
+        chat_frame.grid_columnconfigure(0, weight=1)
 
         # Create a Scrollbar
         scrollbar = tk.Scrollbar(chat_frame)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        scrollbar.grid(row=0, column=1, sticky="ns")
 
         # Create the Text widget
         self.chat_history = tk.Text(chat_frame, state='normal', width=60, height=30,
                                     bg=background_color, fg=color_text,
                                     insertbackground=color_text, yscrollcommand=scrollbar.set)
-        self.chat_history.pack(fill=tk.BOTH, expand=True)
+        self.chat_history.grid(row=0, column=0, sticky="nsew")
 
         # Configure the Scrollbar
         scrollbar.config(command=self.chat_history.yview)
@@ -56,12 +67,18 @@ class ChatApplication:
         background_color = os.getenv('CHAT_BACKGROUND_COLOR', 'white')
         color_text = os.getenv('CHAT_COLOR_TEXT', 'black')
 
-        self.input_text = tk.Entry(self.root, width=50, bg=background_color,
-                                   fg=color_text, insertbackground=color_text)
-        self.input_text.pack(padx=10, pady=5)
+        self.input_text = tk.Entry(
+            self.root, bg=background_color, fg=color_text,
+            insertbackground=color_text
+        )
+        self.input_text.grid(row=1, column=0, sticky="ew", padx=10, pady=5)
 
-        self.boton_enviar = tk.Button(self.root, text="Send", command=self.send_message)
-        self.boton_enviar.pack(pady=5)
+        # Botón de enviar
+        self.boton_enviar = tk.Button(
+            self.root, text="Send", command=self.send_message
+        )
+        self.boton_enviar.grid(row=2, column=0, sticky="ew", padx=10, pady=5)
+
 
         self.root.bind('<Return>', lambda event: self.send_message())
 
