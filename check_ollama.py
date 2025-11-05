@@ -55,13 +55,13 @@ def check_port_open(host: str = HOST, port: int = PORT, timeout: float = 1.0) ->
     try:
         s.connect((host, port))
         s.close()
-        return True, f"Puerto {host}:{port} aceptó la conexión."
+        return True, f"Port {host}:{port} has conection."
     except socket.timeout:
-        return False, f"Timeout al conectar a {host}:{port}."
+        return False, f"Timeout to connection: {host}:{port}."
     except ConnectionRefusedError:
-        return False, f"Conexión rechazada en {host}:{port}."
+        return False, f"Connection fail {host}:{port}."
     except Exception as e:
-        return False, f"Error al comprobar puerto: {e}"
+        return False, f"Error at checking: {e}"
 
 
 def check_http_models(host: str = HOST, port: int = PORT, path: str = MODELS_PATH, timeout: float = HTTP_TIMEOUT) -> Tuple[bool, str]:

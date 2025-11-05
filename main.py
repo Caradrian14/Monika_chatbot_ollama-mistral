@@ -115,7 +115,8 @@ class ChatApplication:
             logging.error("Error in the frame: %s", str(e))
 
 if __name__ == "__main__":
-
+    if check_ollama.main():
+        print("WARINING: There migth be a problem with Ollama")
     window = tk.Tk()
     app = ChatApplication(window)
     window.mainloop()
