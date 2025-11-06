@@ -1,6 +1,8 @@
 import logging
 import os
 import tkinter as tk
+from tkinter import messagebox
+
 from dotenv import load_dotenv
 from langchain_ollama import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
@@ -133,7 +135,11 @@ class ChatApplication:
 
 if __name__ == "__main__":
     if check_ollama.main():
-        print("WARINING: There migth be a problem with Ollama")
+        # Mostrar ventana de advertencia
+        messagebox.showwarning(
+            title="Warning",
+            message="Looks Like there can be a connection problem with Ollama"
+        )
     window = tk.Tk()
     app = ChatApplication(window)
     window.mainloop()
