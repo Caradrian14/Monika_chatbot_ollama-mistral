@@ -135,7 +135,7 @@ class ChatApplication:
 
 if __name__ == "__main__":
     if check_ollama.main():
-        # Mostrar ventana de advertencia
+        # Warning Message
         messagebox.showwarning(
             title="Warning",
             message="Looks Like there can be a connection problem with Ollama"
