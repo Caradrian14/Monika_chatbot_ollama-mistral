@@ -37,6 +37,8 @@ I go with a simple and reduce description, because it works for me and having le
 
 With that I invite you to test and experiment to find the best combination for you.
 
+Remember to restart the application to see apply the changes.
+
 # Future works
 - Add a settings to modify the .env file
 - Create a dinamic text Size
