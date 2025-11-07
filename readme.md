@@ -1,6 +1,8 @@
 # Simple Chatbot With Ollama and Python
 This is a simple chatbot with a simple interface that lets you talk to Monika from DDLC, or whatever character you like by changing the '.env'
 
+**KEEP IN MIND THAT WINDOWS DON'T LIKE UNKNOWN APPS, BUT YOU CAN RUN IT WITHOUT PROBLEMS, IT SHOULDN'T HAVE ANY PROBLEMS WITH ANTIVIRUS AS FAR AS I KNOW (I USE AVAST)**
+
 # Guide to installation
 First we need Ollama, install it on the [official page](https://ollama.com/download)
 
