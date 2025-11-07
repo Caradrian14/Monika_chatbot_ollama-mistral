@@ -39,3 +39,7 @@ With that I invite you to test and experiment to find the best combination for y
 
 # Future works
 - Add a settings to modify the .env file
+- Create a dinamic text Size
+- improve the navigation of the text
+- Add pre-made characters and make them save compatible
+- implement a save conversation
